@@ -1,0 +1,18 @@
+// Place all the styles related to the Home controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+.nav-item.active {
+  background-color: #007bff;
+  border-radius: 5px;
+  a {
+    color: white;
+  }
+  .badge-primary {
+    color: #007bff;
+    background-color: white;
+  }
+}
+.nav-item .badge {
+  margin-right: 1rem;
+}
