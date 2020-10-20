@@ -53,6 +53,9 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
+  # async with sqlite locks seeds, so we'll skip it as it is irrelevant for this dummy app
+  config.active_job.queue_adapter = :inline
+
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
 
