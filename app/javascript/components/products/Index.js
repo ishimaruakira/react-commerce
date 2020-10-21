@@ -46,7 +46,6 @@ class Index extends React.Component {
   render () {
     return (
       <React.Fragment>
-        <h1>Product List</h1>
         <div className='row'>
           <div className='col-md-3 d-none d-md-block'>
             <Categories categories={this.state.categories} total_records={this.state.total_records} current_category={this.state.category_id} onCategorySelect={this.selectCategory} />

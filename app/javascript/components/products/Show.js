@@ -20,14 +20,34 @@ class Show extends React.Component {
   loadData = (page) => {
     const { match: { params } } = this.props;
     fetch(`/api/v1/products/${params.product_id}.json`)
-      .then((response) => {return response.json()})
-      .then((data) => {this.setState( data ) });
+      .then(response => response.json())
+      .then(data => this.setState( data ) );
   }
+
+  addItem = (e) => {
+    e.preventDefault()
+    const csrf = document.querySelector("meta[name='csrf-token']").getAttribute("content");
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrf
+      },
+      body: JSON.stringify({ product_id: this.state.product.id })
+    }
+    fetch('/api/v1/basket', requestOptions)
+      .then(response => response.json())
+      .then(data => this.notifySuccess())
+  }
+
+  notifySuccess() {
+    alert('added')
+  }
+
 
   render () {
     return (
       <React.Fragment>
-        <h1><Link to="/">Product List</Link></h1>
         <div className='row'>
           <div className='col-2'>
             <div className='border rounded d-flex flex-wrap align-items-center h-100'>
@@ -40,6 +60,7 @@ class Show extends React.Component {
             {this.state.product.price &&
               <p><Currency quantity={this.state.product.price} currency="GBP" /></p>
             }
+            <a href='#' onClick={this.addItem}>Add to Basket</a>
           </div>
         </div>
       </React.Fragment>
