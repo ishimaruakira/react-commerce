@@ -1,12 +1,14 @@
 import React from "react"
 import PropTypes from "prop-types"
 import classNames from "classnames"
+import { connect } from "react-redux";
+import { selectCategory } from "../../actions/products";
 
 class Categories extends React.Component {
 
   selectCategory(id, e) {
     e.preventDefault();
-    this.props.onCategorySelect(id);
+    this.props.selectCategory(id);
   }
 
   render () {
@@ -30,10 +32,21 @@ class Categories extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    categories: state.categories,
+    total_records: state.total_records,
+    current_category: state.category_id
+  };
+}
+
 Categories.propTypes = {
-  categories: PropTypes.array,
-  current_category: PropTypes.number,
-  total_records: PropTypes.number,
-  onCategorySelect: PropTypes.func
+  // categories: PropTypes.array,
+  // current_category: PropTypes.number,
+  // total_records: PropTypes.number,
+  // onCategorySelect: PropTypes.func
 };
-export default Categories
+export default connect(
+  mapStateToProps,
+  { selectCategory }
+)(Categories);

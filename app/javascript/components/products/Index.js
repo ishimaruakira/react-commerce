@@ -2,7 +2,9 @@ import React from "react"
 import PropTypes from "prop-types"
 import classNames from "classnames"
 import Currency from 'react-currency-formatter';
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { getData, doSearch, changePage } from "../../actions/products";
 
 import Pagination from "../Pagination"
 import Categories from "./Categories"
@@ -11,12 +13,12 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      products: [],
-      categories: [],
-      current_page: 1,
-      total_pages: 1,
+      // products: [],
+      // categories: [],
+      // current_page: 1,
+      // total_pages: 1,
       search: '',
-      category_id: null
+      // category_id: null
     };
   }
 
@@ -26,36 +28,41 @@ class Index extends React.Component {
 
   doSearch = (e) => {
     var val = e.target.value;
-    this.setState({search: val}, this.loadData);
+    this.props.doSearch(val);
+    // this.setState({search: val}, this.loadData);
   }
 
   loadData = (page) => {
-    fetch(`/api/v1/products.json?search=${this.state.search}&page=${page}&category_id=${this.state.category_id || ''}`)
-      .then((response) => {return response.json()})
-      .then((data) => {this.setState( data ) });
+    this.props.getData()
+
+    // fetch(`/api/v1/products.json?search=${this.state.search}&page=${page}&category_id=${this.state.category_id || ''}`)
+    //   .then((response) => {return response.json()})
+    //   .then((data) => {this.setState( data ) });
   }
 
   pageChanged = (page) => {
-    this.loadData(page);
+    // this.loadData(page);
+    this.props.changePage(page)
   }
 
-  selectCategory = (id) => {
-    this.setState({category_id: id}, this.loadData);
-  }
+  // selectCategory = (id) => {
+
+  //   this.setState({category_id: id}, this.loadData);
+  // }
 
   render () {
     return (
       <React.Fragment>
         <div className='row'>
           <div className='col-md-3 d-none d-md-block'>
-            <Categories categories={this.state.categories} total_records={this.state.total_records} current_category={this.state.category_id} onCategorySelect={this.selectCategory} />
+            <Categories />
           </div>
           <div className='col-12 col-md-9'>
             <div className='input-group mb-3'>
-              <input type='text' className='form-control' placeholder='Search' onChange={this.doSearch} />
+              <input type='text' className='form-control' placeholder='Search' defaultValue={this.props.search} onChange={this.doSearch} />
             </div>
             <div className='row'>
-              {this.state.products.map(product => (
+              {this.props.products.map(product => (
                 <div className='col-6 col-lg-4 col-xl-3 mb-3' key={product.id}>
                   <div className='card h-100'>
                     <div className="embed-responsive embed-responsive-16by9">
@@ -76,7 +83,7 @@ class Index extends React.Component {
                 </div>
               ))}
               <div className='col-12'>
-                <Pagination currentPage={this.state.current_page} totalPages={this.state.total_pages} onPageChange={this.pageChanged} />
+                <Pagination currentPage={this.props.current_page} totalPages={this.props.total_pages} onPageChange={this.pageChanged} />
               </div>
             </div>
           </div>
@@ -86,10 +93,24 @@ class Index extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    products: state.products,
+    current_page: state.current_page,
+    total_pages: state.total_pages,
+    category_id: state.category_id,
+    search: state.search,
+    page: state.page
+  };
+}
+
 Index.propTypes = {
-  products: PropTypes.array,
-  categories: PropTypes.array,
-  search: PropTypes.string,
-  category_id: PropTypes.number
+  // products: PropTypes.array,
+  // categories: PropTypes.array,
+  // search: PropTypes.string,
+  // category_id: PropTypes.number
 };
-export default Index
+export default connect(
+  mapStateToProps,
+  { getData, doSearch, changePage }
+)(Index);
